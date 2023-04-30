@@ -4,13 +4,16 @@ package com.example.meditationsrest_main.controllers;
 import com.example.meditationsrest_main.models.Meditation;
 import com.example.meditationsrest_main.pojo.MeditationRequest;
 import com.example.meditationsrest_main.service.MeditationService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/meditations")
+@CrossOrigin(origins = "*")
 public class MeditationController {
 
     public MeditationController(MeditationService meditationService) {
@@ -20,8 +23,7 @@ public class MeditationController {
     MeditationService meditationService;
 
 
-    @GetMapping("/getall")
-    @PreAuthorize("hasAnyRole('USER','ADMIN','MODERATOR')")
+    @GetMapping("/all")
     public List<Meditation> getAll(){
         return meditationService.getAll();
     }
@@ -32,19 +34,15 @@ public class MeditationController {
         return meditationService.getByID(id);
     }
 
-    @PostMapping("/add")
+    @PostMapping("/create")
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR')")
-    public Meditation addMeditation(@RequestBody MeditationRequest requestBody){
-        var meditation = new Meditation(
-                requestBody.image,
-                requestBody.videourl,
-                requestBody.description,
-                (float) 12.2);
-        System.out.println(meditation);
-        return meditationService.add(meditation);
+    public ResponseEntity<Meditation> createMeditation(@RequestBody MeditationRequest meditationRequest) throws Throwable {
+        Meditation meditation = meditationService.createMeditation(meditationRequest);
+        return ResponseEntity.created(URI.create("/api/meditations/" + meditation.getId())).body(meditation);
     }
-
-
-
-
+    @PostMapping("/delete/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR')")
+    public void deleteMeditation(@PathVariable Long id){
+        meditationService.deleteById(id);
+    }
 }

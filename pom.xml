@@ -9,8 +9,8 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.example</groupId>
-    <artifactId>MeditaionsREST</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <artifactId>meditations-rest</artifactId>
+    <version>1.0.0</version>
     <name>MeditaionsREST</name>
     <description>MeditationsREST-api application</description>
     <properties>

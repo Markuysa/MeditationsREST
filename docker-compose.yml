@@ -1,0 +1,19 @@
+version: '3.9'
+services:
+  server:
+    build: .
+    container_name: "MeditationREST-server"
+    restart: on-failure
+    depends_on:
+      - postgres
+  postgres:
+    container_name: "meditationsDB"
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: islam20011
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+volumes:
+  postgres_data:

@@ -3,6 +3,8 @@ package com.example.meditationsrest_main.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name="meditations")
@@ -14,7 +16,6 @@ public class Meditation {
     private Long id;
 
     @Column(name = "image")
-    @JsonIgnore
     String image;
     @Column(name = "videoURL")
     String video;
@@ -23,6 +24,14 @@ public class Meditation {
 
     @Column(name = "rating")
     Float rating;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "meditation_category",
+            joinColumns = {@JoinColumn(name = "meditation_id")},
+            inverseJoinColumns = {@JoinColumn(name = "category_id")}
+    )
+    private Set<Category> categories = new HashSet<>();
 
     public void setImage(String image) {
         this.image = image;
@@ -74,4 +83,11 @@ public class Meditation {
         return id;
     }
 
+    public Set<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(Set<Category> categories) {
+        this.categories = categories;
+    }
 }

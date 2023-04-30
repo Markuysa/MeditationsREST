@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/meditations/{meditationId}/comments")
+@CrossOrigin(origins = "*")
 public class CommentsController {
     public CommentsController(CommentsService commentsService) {
         this.commentsService = commentsService;
