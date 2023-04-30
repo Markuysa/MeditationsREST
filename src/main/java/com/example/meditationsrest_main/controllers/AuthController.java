@@ -23,11 +23,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -50,7 +49,10 @@ public class AuthController {
 	JwtUtils jwtUtils;
 	
 	@PostMapping("/signin")
-	public ResponseEntity<?> authUser(@RequestBody LoginRequest loginRequest) {
+	public ResponseEntity<?> authUser(@RequestBody LoginRequest loginRequest,
+									  HttpServletRequest req,
+									  HttpServletResponse res,
+									  @CookieValue(value = "jwt", defaultValue = "") String jwt) {
 		
 		Authentication authentication = authenticationManager
 				.authenticate(new UsernamePasswordAuthenticationToken(

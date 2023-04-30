@@ -29,7 +29,6 @@ public class MeditationController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('USER','ADMIN','MODERATOR')")
     public Meditation getByID(@PathVariable Long id){
         return meditationService.getByID(id);
     }

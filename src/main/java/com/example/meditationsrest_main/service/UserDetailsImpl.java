@@ -3,6 +3,7 @@ package com.example.meditationsrest_main.service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.example.meditationsrest_main.models.Meditation;
@@ -23,28 +24,30 @@ public class UserDetailsImpl implements UserDetails {
 	@JsonIgnore
 	private String password;
 	private Collection<? extends GrantedAuthority> authorities;
-//	private Collection<Meditation> meditations;
+	private Collection<Meditation> meditations;
 
 	public UserDetailsImpl(Long id, String username, String email, String password,
-			Collection<? extends GrantedAuthority> authorities) {
+			Collection<? extends GrantedAuthority> authorities,Collection<Meditation> meditations) {
 		this.id = id;
 		this.username = username;
 		this.email = email;
 		this.password = password;
 		this.authorities = authorities;
+		this.meditations=meditations;
 	}
 
 	public static UserDetailsImpl build(User user) {
 		List<GrantedAuthority> authorities = user.getRoles().stream()
 				.map(role -> new SimpleGrantedAuthority(role.getName().name()))
 				.collect(Collectors.toList());
-		
+		Set<Meditation> meditations=user.getFavorites();
 		return new UserDetailsImpl(
 				user.getId(), 
 				user.getUsername(), 
 				user.getEmail(), 
 				user.getPassword(), 
-				authorities);
+				authorities,
+				meditations);
 	}
 
 	@Override
@@ -114,5 +117,12 @@ public class UserDetailsImpl implements UserDetails {
 			return false;
 		return true;
 	}
-	
+
+	public Collection<Meditation> getMeditations() {
+		return meditations;
+	}
+
+	public void setMeditations(Collection<Meditation> meditations) {
+		this.meditations = meditations;
+	}
 }

@@ -3,9 +3,12 @@ services:
   server:
     build: .
     container_name: "MeditationREST-server"
-    restart: on-failure
+    restart: always
+    ports:
+      - "8080:8080"
     depends_on:
       - postgres
+
   postgres:
     container_name: "meditationsDB"
     image: postgres:latest
