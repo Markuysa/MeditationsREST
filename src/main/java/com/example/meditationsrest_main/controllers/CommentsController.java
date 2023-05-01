@@ -21,7 +21,6 @@ public class CommentsController {
     private CommentsService commentsService;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('USER','ADMIN','MODERATOR')")
     public List<Comment> getAllCommentsForMeditation(@PathVariable Long meditationId) {
         return commentsService.getComments(meditationId);
     }

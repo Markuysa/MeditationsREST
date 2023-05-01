@@ -29,7 +29,6 @@ public class UserController {
         return userService.getFavorites(userId);
     }
     @GetMapping("/{userId}")
-    @PreAuthorize("hasRole('ADMIN')")
     public UserDetails getUser(@PathVariable Long userId) {
         return userService.loadUserById(userId);
     }

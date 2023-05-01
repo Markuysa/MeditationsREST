@@ -23,6 +23,8 @@ public class CommentsService {
 
     public Comment createComment(CommentDto commentDto, Long meditationId){
         Comment comment = new Comment();
+        comment.setUserID(commentDto.getUserId());
+        comment.setCreatedAt(commentDto.getCreatedAt());
         comment.setMeditationId(meditationId);
         comment.setBody(commentDto.getBody());
         return commentsRepos.save(comment);
