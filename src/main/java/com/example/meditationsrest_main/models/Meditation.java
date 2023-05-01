@@ -17,6 +17,19 @@ public class Meditation {
 
     @Column(name = "image")
     String image;
+
+    public Meditation(Long id, String image, String title, String video, String description, Float rating, Set<Category> categories) {
+        this.id = id;
+        this.image = image;
+        this.title = title;
+        this.video = video;
+        this.description = description;
+        this.rating = rating;
+        this.categories = categories;
+    }
+
+    @Column(name = "title")
+    String title;
     @Column(name = "videoURL")
     String video;
     @Column(name = "description")
@@ -33,6 +46,13 @@ public class Meditation {
     )
     private Set<Category> categories = new HashSet<>();
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
     public void setImage(String image) {
         this.image = image;
     }
@@ -66,14 +86,6 @@ public class Meditation {
     }
 
     public Meditation(){};
-    public Meditation(String image, String video, String description, Float rating) {
-        this.image = image;
-        this.video = video;
-        this.description = description;
-        this.rating = rating;
-    }
-
-
 
     public void setId(Long id) {
         this.id = id;

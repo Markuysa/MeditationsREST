@@ -23,8 +23,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -53,21 +55,30 @@ public class AuthController {
 									  HttpServletRequest req,
 									  HttpServletResponse res,
 									  @CookieValue(value = "jwt", defaultValue = "") String jwt) {
-		
 		Authentication authentication = authenticationManager
 				.authenticate(new UsernamePasswordAuthenticationToken(
-						loginRequest.getUsername(), 
+						loginRequest.getUsername(),
 						loginRequest.getPassword()));
-		
-		SecurityContextHolder.getContext().setAuthentication(authentication);
-		String jwt = jwtUtils.generateJwtToken(authentication);
-		
 		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 		List<String> roles = userDetails.getAuthorities().stream()
 				.map(item -> item.getAuthority())
 				.collect(Collectors.toList());
+		if (StringUtils.hasText(jwt) && jwtUtils.validateJwtToken(jwt)){
+			return ResponseEntity.ok(new JwtResponse(jwt,
+					userDetails.getId(),
+					userDetails.getUsername(),
+					userDetails.getEmail(),
+					roles));
+		}
+
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+		String jwtToken = jwtUtils.generateJwtToken(authentication);
+		Cookie cookie = new Cookie("jwt", jwtToken);
+		cookie.setMaxAge(60 * 60);
+		cookie.setPath("/");
+		res.addCookie(cookie);
 		
-		return ResponseEntity.ok(new JwtResponse(jwt,
+		return ResponseEntity.ok(new JwtResponse(jwtToken,
 				userDetails.getId(), 
 				userDetails.getUsername(), 
 				userDetails.getEmail(), 
